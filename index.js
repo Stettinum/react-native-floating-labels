@@ -103,12 +103,15 @@ var FloatingLabel  = React.createClass({
     return (
       <Animated.Text
         ref='label'
-        numberOfLines={this.props.numberOfLines}
         style={[this.state.labelStyle, styles.label, this.props.labelStyle]}
       >
         {this.props.children}
       </Animated.Text>
     )
+  },
+
+  focus () {
+    this.refs.TextInput.focus();
   },
 
   render() {
@@ -141,7 +144,7 @@ var FloatingLabel  = React.createClass({
         testID: this.props.testID,
         value: this.state.text,
         underlineColorAndroid: this.props.underlineColorAndroid, // android TextInput will show the default bottom border
-        onKeyPress: this.props.onKeyPress
+        onKeyPress: this.props.onKeyPress,
       },
       elementStyles = [styles.element];
 
@@ -152,12 +155,11 @@ var FloatingLabel  = React.createClass({
     if (this.props.style) {
       elementStyles.push(this.props.style);
     }
-
     return (
   		<View style={elementStyles}>
         {this._renderLabel()}
         <TextInput
-          ref={(r) => { this.input = r; }}
+          ref="TextInput"
           {...props}
         >
         </TextInput>
