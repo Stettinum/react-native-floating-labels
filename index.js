@@ -9,7 +9,8 @@ import {
   Easing,
   Text,
   View,
-  Platform
+  Platform,
+  ViewPropTypes
 } from 'react-native';
 
 var textPropTypes = Text.propTypes || View.propTypes
@@ -19,7 +20,7 @@ var propTypes = {
   inputStyle: textInputPropTypes.style,
   labelStyle: textPropTypes.style,
   disabled: PropTypes.bool,
-  style: View.propTypes.style,
+  style: ViewPropTypes.style,
 }
 
 var FloatingLabel  = React.createClass({
