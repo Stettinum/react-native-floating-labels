@@ -139,4 +139,5 @@ Following events are supported:
 
 
 ***EDIT***
-Have dependency for 'react-native-text-input-reset' => `npm install react-native-text-input-reset`
+Have dependency for 'react-native-text-input-reset' => `npm install react-native-text-input-reset` and then
+`react-native link react-native-text-input-reset`
