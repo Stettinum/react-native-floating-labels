@@ -10,8 +10,7 @@ import {
   Text,
   View,
   Platform,
-  ViewPropTypes,
-  findNodeHandle
+  ViewPropTypes
 } from 'react-native';
 
 var textPropTypes = Text.propTypes || View.propTypes
