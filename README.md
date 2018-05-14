@@ -134,3 +134,8 @@ Following events are supported:
 
 
 **MIT Licensed**
+
+
+
+***EDIT***
+Have dependency for 'react-native-text-input-reset' => `npm install react-native-text-input-reset`
