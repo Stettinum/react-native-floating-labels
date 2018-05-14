@@ -10,8 +10,10 @@ import {
   Text,
   View,
   Platform,
-  ViewPropTypes
+  ViewPropTypes,
+  findNodeHandle
 } from 'react-native';
+import TextInputReset from 'react-native-text-input-reset';
 
 var textPropTypes = Text.propTypes || View.propTypes
 var textInputPropTypes = TextInput.propTypes || textPropTypes
@@ -101,9 +103,11 @@ var FloatingLabel  = React.createClass({
   },
 
   onChangeText(text) {
+    if(!/^\d+$/.test(text.slice(-1)) && this.props.toUpperCase) TextInputReset.resetKeyboardInput(findNodeHandle(this.refs.TextInput))
+
     this.setState({ text })
     if (this.props.onChangeText) {
-      this.props.onChangeText(text)
+      this.props.onChangeText(this.props.toUpperCase ? text.toUpperCase() : text)
     }
   },
 
@@ -162,6 +166,7 @@ var FloatingLabel  = React.createClass({
         value: this.state.text,
         underlineColorAndroid: this.props.underlineColorAndroid, // android TextInput will show the default bottom border
         onKeyPress: this.props.onKeyPress,
+        toUpperCase: this.props.toUpperCase
       },
       elementStyles = [styles.element];
 
