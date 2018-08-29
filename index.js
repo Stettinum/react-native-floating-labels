@@ -103,7 +103,7 @@ var FloatingLabel  = React.createClass({
   },
 
   onChangeText(text) {
-    if(!/^\d+$/.test(text.slice(-1)) && this.props.toUpperCase) TextInputReset.resetKeyboardInput(findNodeHandle(this.refs.TextInput))
+    if(!/^\d+$/.test(text.slice(-1)) && this.props.toUpperCase && TextInputReset) TextInputReset.resetKeyboardInput(findNodeHandle(this.refs.TextInput))
 
     this.setState({ text })
     if (this.props.onChangeText) {
