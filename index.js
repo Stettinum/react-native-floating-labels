@@ -1,72 +1,67 @@
 'use strict';
-import React, {Component, PropTypes} from 'react';
+import React, { Component } from 'react';
 
 import {
   StyleSheet,
   TextInput,
-  LayoutAnimation,
   Animated,
   Easing,
-  Text,
   View,
-  Platform,
-  ViewPropTypes
+  Platform
 } from 'react-native';
 
-var textPropTypes = Text.propTypes || View.propTypes
-var textInputPropTypes = TextInput.propTypes || textPropTypes
-var propTypes = {
-  ...textInputPropTypes,
-  inputStyle: textInputPropTypes.style,
-  labelStyle: textPropTypes.style,
-  disabled: PropTypes.bool,
-  style: ViewPropTypes.style,
-}
+class FloatingLabel extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { text: null, ...this.getInitialState() };
+  }
 
-var FloatingLabel  = React.createClass({
-  propTypes: propTypes,
+  cleanStyle = () => {
+    return this.props.cleanStyle
+      ? this.props.cleanStyle
+      : {
+          fontSize: 20,
+          top: 7
+        };
+  };
 
-  cleanStyle () {
-    return this.props.cleanStyle ? this.props.cleanStyle : {
-      fontSize: 20,
-      top: 7
-    }
-  },
+  dirtyStyle = () => {
+    return this.props.dirtyStyle
+      ? this.props.dirtyStyle
+      : {
+          fontSize: 12,
+          top: -17
+        };
+  };
 
-  dirtyStyle () {
-    return this.props.dirtyStyle ? this.props.dirtyStyle : {
-      fontSize: 12,
-      top: -17
-    }
-  },
-
-  getInitialState () {
+  getInitialState = () => {
     var state = {
       text: this.props.value,
-      dirty: (this.props.value || this.props.placeholder)
+      dirty: this.props.value || this.props.placeholder
     };
 
-    var style = state.dirty ? this.dirtyStyle() : this.cleanStyle()
+    var style = state.dirty ? this.dirtyStyle() : this.cleanStyle();
     state.labelStyle = {
       fontSize: new Animated.Value(style.fontSize),
       top: new Animated.Value(style.top)
-    }
+    };
 
-    return state
-  },
+    return state;
+  };
 
-  componentWillReceiveProps (props) {
+  componentWillReceiveProps(props) {
     if (typeof props.value !== 'undefined' && props.value !== this.state.text) {
-      this.setState({ text: props.value, dirty: !!props.value })
+      this.setState({ text: props.value, dirty: !!props.value });
       //this._animate(!!props.value)
       //when there is no text do not pull down label
-      this._animate(true)
+      this.animate(true);
     }
-  },
+  }
 
-  _animate(dirty) {
-    var nextStyle = dirty ? this.dirtyStyle() : this.cleanStyle()
-    var labelStyle = this.state.labelStyle
+  animate = dirty => {
+    var nextStyle = dirty ? this.dirtyStyle() : this.cleanStyle();
+    var labelStyle = this.state.labelStyle;
+    console.log(nextStyle, 'wwww');
     var anims = Object.keys(nextStyle).map(prop => {
       return Animated.timing(
         labelStyle[prop],
@@ -75,62 +70,65 @@ var FloatingLabel  = React.createClass({
           duration: 200
         },
         Easing.ease
-      )
-    })
+      );
+    });
 
-    Animated.parallel(anims).start()
-  },
+    Animated.parallel(anims).start();
+  };
 
-  _onFocus () {
-    this._animate(true)
-    this.setState({dirty: true})
-    if (this.props.onFocus) {
-      this.props.onFocus(arguments);
+  _onFocus = () => {
+    const { onFocus } = this.props;
+    this.animate(true);
+    this.setState({ dirty: true });
+    if (onFocus) {
+      onFocus();
     }
-  },
+  };
 
-  _onBlur () {
+  _onBlur = () => {
+    const { onBlur } = this.props;
     if (!this.state.text) {
-      this._animate(false)
-      this.setState({dirty: false});
+      this.animate(false);
+      this.setState({ dirty: false });
     }
 
-    if (this.props.onBlur) {
-      this.props.onBlur(arguments);
+    if (onBlur) {
+      onBlur();
     }
-  },
+  };
 
-  onChangeText(text) {
-
-    this.setState({ text })
+  onChangeText = text => {
+    this.setState({ text });
     if (this.props.onChangeText) {
-      this.props.onChangeText(this.props.toUpperCase ? text.toUpperCase() : text)
+      this.props.onChangeText(
+        this.props.toUpperCase ? text.toUpperCase() : text
+      );
     }
-  },
+  };
 
-  updateText(event) {
-    var text = event.nativeEvent.text
-    this.setState({ text })
+  updateText = event => {
+    var text = event.nativeEvent.text;
+    this.setState({ text });
 
     if (this.props.onEndEditing) {
-      this.props.onEndEditing(event)
+      this.props.onEndEditing(event);
     }
-  },
+  };
 
-  _renderLabel () {
+  _renderLabel = () => {
     return (
       <Animated.Text
-        ref='label'
+        ref="label"
         style={[this.state.labelStyle, styles.label, this.props.labelStyle]}
       >
         {this.props.children}
       </Animated.Text>
-    )
-  },
+    );
+  };
 
-  focus () {
+  focus = () => {
     this.refs.TextInput.focus();
-  },
+  };
 
   render() {
     var props = {
@@ -162,7 +160,7 @@ var FloatingLabel  = React.createClass({
         testID: this.props.testID,
         value: this.state.text,
         underlineColorAndroid: this.props.underlineColorAndroid, // android TextInput will show the default bottom border
-        onKeyPress: this.props.onKeyPress,
+        onKeyPress: this.props.onKeyPress
       },
       elementStyles = [styles.element];
 
@@ -174,30 +172,26 @@ var FloatingLabel  = React.createClass({
       elementStyles.push(this.props.style);
     }
     return (
-  		<View style={elementStyles}>
+      <View style={elementStyles}>
         {this._renderLabel()}
-        <TextInput
-          ref="TextInput"
-          {...props}
-        >
-        </TextInput>
+        <TextInput ref="TextInput" {...props} />
       </View>
     );
-  },
-});
+  }
+}
 
-var labelStyleObj = {
+const labelStyleObj = {
   marginTop: 21,
   paddingLeft: 9,
   color: '#AAA',
   position: 'absolute'
-}
+};
 
 if (Platform.OS === 'web') {
-  labelStyleObj.pointerEvents = 'none'
+  labelStyleObj.pointerEvents = 'none';
 }
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   element: {
     position: 'relative'
   },
@@ -211,9 +205,9 @@ var styles = StyleSheet.create({
     fontSize: 20,
     borderRadius: 4,
     paddingLeft: 10,
-    marginTop: 20,
+    marginTop: 20
   },
   label: labelStyleObj
-})
+});
 
-module.exports = FloatingLabel;
+export default FloatingLabel;
